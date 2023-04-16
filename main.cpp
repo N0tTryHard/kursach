@@ -1,37 +1,26 @@
 #include <iostream>
-#include <json/json.h>
-#include "fstream"
+#include "Json_class.h"
 
 
 int main() {
-    std::ifstream in_file("/Users/alex/CLionProjects/kursach/ne_50m_admin_0_countries.json");
-    Json::Value root;
-    Json::Reader reader;
+    std::string filepath;
+    std::cout << "Введите путь до файла: \n";
+    std::cin >> filepath;
 
-    bool parsingSuccessful = reader.parse(in_file, root);
-    if (!parsingSuccessful) {
-        std::cout << "Ошибка чтения файла" << std::endl;
-    }
-
-    const Json::Value values = root["features"];
-    const int sz = int(values.size());
-    std::vector<Json::Value> v(sz);
-    for (int i = 0; i < sz; ++i)
-        v[i] = values[i]["properties"];
+    Json_class OBJ1(filepath);
 
     int country_number;
     char answer;
     std::string key;
 
-    std::cout << "\nВведите номер страны (от 1 до " << values.size() << "): \n";
+    std::cout << "\nВведите номер страны (от 1 до " << OBJ1.get_size() << "): \n";
     std::cin >> country_number;
-    std::cout << v[country_number - 1]["NAME_EN"] << ' ' << v[country_number - 1]["ISO_A2"] << ' '
-              << v[country_number - 1]["ISO_A3"] << std::endl;
+    OBJ1.Country_name(country_number);
 
     std::cout << "\nВывести информацию о данной стране? (y/n): \n";
     std::cin >> answer;
     if (answer == 'y') {
-        std::cout << v[country_number - 1];
+        OBJ1.Country_info(country_number);
     }
 
     std::cout << "\nНужна сортировка? (y/n): \n";
@@ -39,25 +28,26 @@ int main() {
     if (answer == 'y') {
         std::cout << "\nПо какому полю отсортировать?: \n";
         std::cin >> key;
-        for (int i = 1; i < sz; ++i) {
-            int j = i - 1;
-            while (v[j][key] > v[j + 1][key]) {
-                swap(v[j], v[j + 1]);
-                j--;
-            }
-        }
+        OBJ1.sort_key(key);
     }
 
-    std::cout << "\nВведите номер страны (от 1 до " << values.size() << "): \n";
+    std::cout << "\nВведите номер страны (от 1 до 242): \n";
     std::cin >> country_number;
-    std::cout << v[country_number - 1]["NAME_EN"] << ' ' << v[country_number - 1]["ISO_A2"] << ' '
-              << v[country_number - 1]["ISO_A3"] << std::endl;
+    OBJ1.Country_name(country_number);
 
-    std::cout << "\nВывести информацию о данной стране? (y/n): \n";
-    std::cin >> answer;
-    if (answer == 'y') {
-        std::cout << v[country_number - 1];
+    int num;
+    std::cout << "Сколько полей нужно записать?: \n";
+    std::cin >> num;
+
+    auto *key_arr = new std::string[num];
+    std::cout << "Какие поля нужно записать?: \n";
+    for (int i = 0; i < num; ++i) {
+        std::cin >> key_arr[i];
     }
+
+    /*std::cout << "В какой файл нужно записать?:\n";
+    std::cin >> filepath;
+    OBJ1.save_in_file(filepath);*/
 
     return 0;
 }
