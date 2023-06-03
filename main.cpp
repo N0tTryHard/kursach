@@ -1,26 +1,27 @@
-#include <iostream>
-#include "Json_class.h"
+#include "iostream"
+#include "JSONfile.h"
 
 
 int main() {
+    JsonHandler handler;
     std::string filepath;
     std::cout << "Введите путь до файла: \n";
     std::cin >> filepath;
 
-    Json_class OBJ1(filepath);
+    handler.loadFromFile(filepath);
 
     int country_number;
     char answer;
     std::string key;
 
-    std::cout << "\nВведите номер страны (от 1 до " << OBJ1.get_size() << "): \n";
+    std::cout << "\nВведите номер страны (от 1 до 242): \n";
     std::cin >> country_number;
-    OBJ1.Country_name(country_number);
+    handler.countryName(country_number);
 
     std::cout << "\nВывести информацию о данной стране? (y/n): \n";
     std::cin >> answer;
     if (answer == 'y') {
-        OBJ1.Country_info(country_number);
+        handler.countryInfo(country_number);
     }
 
     std::cout << "\nНужна сортировка? (y/n): \n";
@@ -28,12 +29,12 @@ int main() {
     if (answer == 'y') {
         std::cout << "\nПо какому полю отсортировать?: \n";
         std::cin >> key;
-        OBJ1.sort_key(key);
+        handler.sortData(key);
     }
 
     std::cout << "\nВведите номер страны (от 1 до 242): \n";
     std::cin >> country_number;
-    OBJ1.Country_name(country_number);
+    handler.countryName(country_number);
 
     int num;
     std::cout << "Сколько полей нужно записать?: \n";
@@ -44,10 +45,15 @@ int main() {
     for (int i = 0; i < num; ++i) {
         std::cin >> key_arr[i];
     }
+    Json::Value fields;
+    for (int i = 0; i < num; ++i) {
+        fields.append(key_arr[i]);
+    }
+    handler.selectFields(fields);
 
-    /*std::cout << "В какой файл нужно записать?:\n";
+    std::cout << "В какой файл нужно записать?:\n";
     std::cin >> filepath;
-    OBJ1.save_in_file(filepath);*/
+    handler.saveToFile(filepath);
 
     return 0;
 }
